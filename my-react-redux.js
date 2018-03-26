@@ -2,6 +2,8 @@
  import React from 'react'
  import PropTypes from 'prop-types'
 
+ import {bindActionCreators} from './my-redux'
+
  //connect 负责链接组建，将redux数据放到组件的属性里
  //1.负责接收一个组件，把state里的一些数据放进去，返回一个组件（高阶组件）
  //2.数据变化的时候，能够通知组件
@@ -19,16 +21,20 @@
  		}
 
  		conponentDidMount(){
+ 			const {store} = this.context.store
+ 			store.subscribe(()=>this.update())
  			this.update()
  		}
  		update(){
  			//	获取 mapStateToProps 和 mapDispatchToProps 放入this.props里
  			const {store} = this.store
  			const stateProps = mapStateToProps(store.getState())
+ 			const dispatchProps = bindActionCreators(mapDispatchToProps,store.dispatch)
  			this.setState({
  				props:{
+	 				...this.state.props,
 					...stateProps,
-	 				...this.state.props	
+					...dispatchProps
  				}
 
  			})
